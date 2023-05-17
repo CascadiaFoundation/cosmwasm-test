@@ -1,0 +1,22 @@
+{
+  "name": "deployscript",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "deploy": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "@cosmjs/amino": "^0.30.1",
+    "@cosmjs/cosmwasm-stargate": "^0.30.1",
+    "@cosmjs/crypto": "^0.30.1",
+    "@cosmjs/proto-signing": "^0.30.1",
+    "@cosmjs/stargate": "^0.30.1",
+    "pako": "^2.1.0",
+    "ts-node": "^10.9.1"
+  },
+  "devDependencies": {
+    "@protobufs/gogoproto": "^0.0.10",
+    "typescript": "^5.0.4"
+  }
+}
