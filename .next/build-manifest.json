@@ -15,6 +15,11 @@
   ],
   "rootMainFiles": [],
   "pages": {
+    "/404": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/404.js"
+    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -25,10 +30,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/contracts/cw1/subkeys": [
+    "/contracts/cw20/base": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/contracts/cw1/subkeys.js"
+      "static/chunks/pages/contracts/cw20/base.js"
     ]
   },
   "ampFirstPages": []

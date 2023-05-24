@@ -18,46 +18,25 @@ const HomePage: NextPage = () => {
       <br />
 
       <div className="grid gap-8 md:grid-cols-2">
-        {/* <HomeCard
-          className="p-4 -m-4 rounded hover:bg-gray-500/10"
-          link="/airdrops/list?page=1"
-          title="Manage Airdrops"
-        >
-          Looking for a fast and efficient way to airdrop your project? Or come to claim your allocation? Open the
-          Airdrops page to view and claim your airdrop!
-        </HomeCard> */}
-        <HomeCard className="p-4 -m-4 rounded hover:bg-gray-500/10" link="/airdrops/create" title="Create Airdrops">
-          Looking to create your own airdrop for your project? Use our Create Airdrop page and get started!
-        </HomeCard>
-        {/*
         <div className="space-y-4">
           <h2 className="text-xl font-bold">Smart Contract Dashboard</h2>
           <p className="text-white/75">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta
-            asperiores quis soluta recusandae sequi adipisci quod tempora modi,
-            debitis beatae tempore accusantium, esse itaque quaerat obcaecati
-            quia totam necessitatibus voluptas!
+            deploy, initialize, execute message and query. can do any thing related with smart contract
           </p>
         </div>
         <div className="space-y-4">
           <h2 className="text-xl font-bold">Something Cool</h2>
           <p className="text-white/75">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga
-            accusantium distinctio dignissimos maxime vero illum explicabo
-            officiis. Pariatur magni, enim qui itaque atque quibusdam debitis
-            iste delectus deserunt dolores quisquam?
+            Message signature and verification etc ...
           </p>
         </div>
         <div className="space-y-4">
           <h2 className="text-xl font-bold">Adding Value</h2>
           <p className="text-white/75">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quasi enim
-            minus voluptates dicta, eum debitis iusto commodi delectus itaque
-            qui, unde adipisci. Esse eveniet dolorem consequatur tempore at
-            voluptates aut?
+            explore various references
           </p>
         </div>
-        */}
+       
       </div>
     </section>
   )
