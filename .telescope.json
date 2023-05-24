@@ -2,7 +2,7 @@
   "protoDirs": [
     "./proto"
   ],
-  "outPath": "./src/codegen",
+  "outPath": "./gen",
   "options": {
     "aminoEncoding": {
       "enabled": true

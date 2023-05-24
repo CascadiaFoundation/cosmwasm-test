@@ -1,17 +1,46 @@
-/* eslint-disable import/no-extraneous-dependencies */
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-});
+// @ts-check
 
-module.exports = withBundleAnalyzer({
-  eslint: {
-    dirs: ['.'],
+const packageJson = require('./package.json')
+
+const LOCALHOST_URL = `http://localhost:${process.env.PORT || 3000}`
+
+/**
+ * @type {import("next").NextConfig}
+ * @see https://nextjs.org/docs/api-reference/next.config.js/introduction
+ */
+const nextConfig = {
+  env: {
+    APP_VERSION: packageJson.version,
+    NEXT_PUBLIC_WEBSITE_URL:
+      process.env.NODE_ENV === 'development' ? LOCALHOST_URL : process.env.NEXT_PUBLIC_WEBSITE_URL,
   },
-  poweredByHeader: false,
-  trailingSlash: true,
-  basePath: '',
-  // The starter code load resources from `public` folder with `router.basePath` in React components.
-  // So, the source code is "basePath-ready".
-  // You can remove `basePath` if you don't need it.
   reactStrictMode: true,
-});
+  trailingSlash: true,
+  webpack(config, { dev, webpack }) {
+    // svgr integration
+    config.module.rules.push({
+      test: /\.svg$/i,
+      issuer: /\.[jt]sx?$/,
+      use: ['@svgr/webpack'],
+    })
+    // predefined constants
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        __DEV__: dev,
+        __PROD__: !dev,
+      }),
+    )
+    return config
+  },
+  async redirects() {
+    return [
+      {
+        source: '/airdrops/:address/manage',
+        destination: '/airdrops/manage',
+        permanent: true,
+      },
+    ]
+  },
+}
+
+module.exports = nextConfig

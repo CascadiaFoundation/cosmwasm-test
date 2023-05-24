@@ -1,2 +1,10 @@
-# ignore node module
-node_modules
+*.log
+*.tsbuildinfo
+.DS_Store
+.env*
+.vercel
+.next/
+node_modules/
+out/
+
+!.env.example

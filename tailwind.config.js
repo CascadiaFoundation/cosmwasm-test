@@ -1,52 +1,65 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+const colors = require('tailwindcss/colors')
+const defaultTheme = require('tailwindcss/defaultTheme')
+const plugin = require('tailwindcss/plugin')
 
-  mode: 'jit',
-  purge: {
-    content: ['./src/**/*.{js,ts,jsx,tsx}'],
-    options: {
-      safelist: [/data-theme$/],
-    },
-  },
+module.exports = {
+  content: ['./{components,contexts,hooks,pages,utils}/**/*.{js,cjs,mjs,ts,tsx}'],
+
   theme: {
-    fontSize: {
-      xs: '0.75rem',
-      sm: '0.875rem',
-      base: '1rem',
-      lg: '1.125rem',
-      xl: '1.25rem',
-      '2xl': '1.5rem',
-      '3xl': '1.875rem',
-      '4xl': '2.25rem',
-      '5xl': '3rem',
-      '6xl': '4rem',
-    },
     extend: {
       colors: {
-        gray: {
-          100: '#f7fafc',
-          200: '#edf2f7',
-          300: '#e2e8f0',
-          400: '#cbd5e0',
-          500: '#a0aec0',
-          600: '#718096',
-          700: '#4a5568',
-          800: '#2d3748',
-          900: '#1a202c',
+        cascadia: { DEFAULT: '#2B70BE' },
+        dark: { DEFAULT: '#06090B' },
+        gray: { DEFAULT: '#F3F6F8' },
+        'dark-gray': { DEFAULT: '#191D20' },
+        purple: { DEFAULT: '#7E5DFF' },
+
+        neutral: colors.neutral,
+        plumbus: {
+          DEFAULT: '#2B70BE',
+          light: '#2B70BE',
+          matte: '#2B70BE',
+          dark: '#2B70BE',
+          10: '#2B70BE',
+          20: '#2B70BE',
+          30: '#2B70BE',
+          40: '#2B70BE',
+          50: '#2B70BE',
+          60: '#2B70BE',
+          70: '#2B70BE',
+          80: '#2B70BE',
+          90: '#2B70BE',
+          100: '#2B70BE',
+          110: '#2B70BE',
+          120: '#2B70BE',
         },
-        blue: {
-          100: '#ebf8ff',
-          200: '#bee3f8',
-          300: '#90cdf4',
-          400: '#63b3ed',
-          500: '#4299e1',
-          600: '#3182ce',
-          700: '#2b6cb0',
-          800: '#2c5282',
-          900: '#2a4365',
-        },
+        twitter: { DEFAULT: '#1DA1F2' },
+      },
+      fontFamily: {
+        heading: ["'Basement Grotesque'", ...defaultTheme.fontFamily.sans],
+        sans: ['Roboto', ...defaultTheme.fontFamily.sans],
+        mono: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
       },
     },
   },
-  plugins: [require("daisyui")],
-};
+
+  plugins: [
+    // tailwindcss official plugins
+    require('@tailwindcss/forms')({
+      strategy: 'class',
+    }),
+    require('@tailwindcss/line-clamp'),
+
+    // custom gradient background
+    plugin(({ addUtilities }) => {
+      addUtilities({
+        '.cascadiad-gradient-bg': {
+          background: `linear-gradient(63.38deg, rgba(29, 24, 24, 0.25) 45.06%, rgba(10, 50, 185, 0.25) 100.6%), #353841`,
+        },
+        '.cascadiad-gradient-brand': {
+          background: `linear-gradient(102.33deg, #5883F1 10.96%, #FFFFFF 93.51%)`,
+        },
+      })
+    }),
+  ],
+}
