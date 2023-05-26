@@ -8,6 +8,7 @@ import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
 import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
 import { ESCROW_AMOUNT, ESCROW_CONTRACT_ADDRESS, NETWORK } from 'utils/constants'
 import { getExecuteFee } from 'utils/fees'
+import SigningKeplrCosmWasmClient from 'utils/signingKeplrCosmWasmClient'
 
 // TODO: Split messages into a different file and import
 
@@ -260,38 +261,38 @@ export interface CW20MerkleAirdropContract {
   messages: () => CW20MerkleAirdropMessages
 }
 
-export const CW20MerkleAirdrop = (client: SigningCosmWasmClient, txSigner: string): CW20MerkleAirdropContract => {
+export const CW20MerkleAirdrop = (evmClient: SigningKeplrCosmWasmClient, txSigner: string): CW20MerkleAirdropContract => {
   const use = (contractAddress: string): CW20MerkleAirdropInstance => {
     const fee = getExecuteFee()
 
     const getConfig = async (): Promise<GetConfigResponse> => {
-      return client.queryContractSmart(contractAddress, {
+      return evmClient.client.queryContractSmart(contractAddress, {
         config: {},
       })
     }
 
     const getMerkleRoot = async (stage: number): Promise<GetMerkleRootResponse> => {
-      return client.queryContractSmart(contractAddress, {
+      return evmClient.client.queryContractSmart(contractAddress, {
         merkle_root: { stage },
       })
     }
 
     const getLatestStage = async (): Promise<number> => {
-      const data = await client.queryContractSmart(contractAddress, {
+      const data = await evmClient.client.queryContractSmart(contractAddress, {
         latest_stage: {},
       })
       return data.latest_stage
     }
 
     const isClaimed = async (address: string, stage: number): Promise<boolean> => {
-      const data = await client.queryContractSmart(contractAddress, {
+      const data = await evmClient.client.queryContractSmart(contractAddress, {
         is_claimed: { address, stage },
       })
       return data.is_claimed
     }
 
     const isPaused = async (stage: number): Promise<boolean> => {
-      const data = await client.queryContractSmart(contractAddress, {
+      const data = await evmClient.client.queryContractSmart(contractAddress, {
         is_paused: { stage },
       })
       return data.is_paused
@@ -299,7 +300,7 @@ export const CW20MerkleAirdrop = (client: SigningCosmWasmClient, txSigner: strin
 
     const getContractVersion = async (): Promise<string> => {
       console.log('here')
-      const data = await client.queryContractRaw(
+      const data = await evmClient.client.queryContractRaw(
         contractAddress,
         toUtf8(Buffer.from(Buffer.from('contract_info').toString('hex'), 'hex').toString()),
       )
@@ -308,18 +309,17 @@ export const CW20MerkleAirdrop = (client: SigningCosmWasmClient, txSigner: strin
     }
 
     const totalClaimed = async (stage: number): Promise<string> => {
-      const data = await client.queryContractSmart(contractAddress, {
+      const data = await evmClient.client.queryContractSmart(contractAddress, {
         total_claimed: { stage },
       })
       return data.total_claimed
     }
 
     const updateConfig = async (_txSigner: string, newOwner: string): Promise<string> => {
-      const result = await client.execute(
+      const result = await evmClient.execute(
         _txSigner,
         contractAddress,
         { update_config: { new_owner: newOwner } },
-        'auto',
       )
       return result.transactionHash
     }
@@ -331,7 +331,7 @@ export const CW20MerkleAirdrop = (client: SigningCosmWasmClient, txSigner: strin
       expiration: Expiration,
       totalAmount: number,
     ): Promise<string> => {
-      const result = await client.execute(
+      const result = await evmClient.execute(
         _txSigner,
         contractAddress,
         {
@@ -342,7 +342,6 @@ export const CW20MerkleAirdrop = (client: SigningCosmWasmClient, txSigner: strin
             total_amount: totalAmount,
           },
         },
-        'auto',
       )
       return result.transactionHash
     }
@@ -353,50 +352,47 @@ export const CW20MerkleAirdrop = (client: SigningCosmWasmClient, txSigner: strin
       proof: string[],
       signedMessage?: SignedMessage,
     ): Promise<string> => {
-      const result = await client.execute(
+      const result = await evmClient.execute(
         txSigner,
         contractAddress,
         { claim: { stage, amount, proof, sig_info: signedMessage } },
-        fee,
       )
       return result.transactionHash
     }
 
     const burn = async (stage: number): Promise<string> => {
-      const result = await client.execute(txSigner, contractAddress, { burn: { stage } }, fee)
+      const result = await evmClient.execute(txSigner, contractAddress, { burn: { stage } })
       return result.transactionHash
     }
     const burnAll = async (): Promise<string> => {
-      const result = await client.execute(txSigner, contractAddress, { burn_all: {} }, fee)
+      const result = await evmClient.execute(txSigner, contractAddress, { burn_all: {} })
       return result.transactionHash
     }
 
     const withdraw = async (stage: number, address: string): Promise<string> => {
-      const result = await client.execute(txSigner, contractAddress, { withdraw: { stage, address } }, fee)
+      const result = await evmClient.execute(txSigner, contractAddress, { withdraw: { stage, address } })
       return result.transactionHash
     }
 
     const withdrawAll = async (address: string, amount?: number): Promise<string> => {
-      const result = await client.execute(
+      const result = await evmClient.execute(
         txSigner,
         contractAddress,
         { withdraw_all: { address, amount: amount?.toString() } },
-        fee,
       )
       return result.transactionHash
     }
 
     const pause = async (stage: number): Promise<string> => {
-      const result = await client.execute(txSigner, contractAddress, { pause: { stage } }, fee)
+      const result = await evmClient.execute(txSigner, contractAddress, { pause: { stage } })
       return result.transactionHash
     }
 
     const resume = async (stage: number, newExpiration?: Expiration): Promise<string> => {
-      const result = await client.execute(
+      const result = await evmClient.execute(
         txSigner,
         contractAddress,
         { resume: { stage, new_expiration: newExpiration } },
-        fee,
       )
       return result.transactionHash
     }
@@ -409,7 +405,7 @@ export const CW20MerkleAirdrop = (client: SigningCosmWasmClient, txSigner: strin
       stage: number,
       hrp?: string,
     ): Promise<ExecuteWithSignDataResponse> => {
-      const signed = await client.sign(
+      const signed = await evmClient.signWithEthermint(
         txSigner,
         [
           // Airdrop contract register message
@@ -451,24 +447,24 @@ export const CW20MerkleAirdrop = (client: SigningCosmWasmClient, txSigner: strin
         fee,
         '',
       )
-      const result = await client.broadcastTx(TxRaw.encode(signed).finish())
-      if (isDeliverTxFailure(result)) {
+      const result = await evmClient.broadcastTx(signed!.signedBytes)
+      if (isDeliverTxFailure(result!)) {
         throw new Error(
           [
-            `Error when broadcasting tx ${result.transactionHash} at height ${result.height}.`,
-            `Code: ${result.code}; Raw log: ${result.rawLog ?? ''}`,
+            `Error when broadcasting tx ${result!.transactionHash} at height ${result!.height}.`,
+            `Code: ${result!.code}; Raw log: ${result!.rawLog ?? ''}`,
           ].join(' '),
         )
       }
       return {
-        signed,
-        txHash: result.transactionHash,
+        signed: signed!.rawTx,
+        txHash: result!.transactionHash,
       }
     }
 
     const depositEscrow = async (): Promise<ExecuteWithSignDataResponse> => {
       const config = getNetworkConfig(NETWORK)
-      const signed = await client.sign(
+      const signed = await evmClient.signWithEthermint(
         txSigner,
         [
           {
@@ -490,24 +486,24 @@ export const CW20MerkleAirdrop = (client: SigningCosmWasmClient, txSigner: strin
         fee,
         '',
       )
-      const result = await client.broadcastTx(TxRaw.encode(signed).finish())
-      if (isDeliverTxFailure(result)) {
+      const result = await evmClient.broadcastTx(signed!.signedBytes)
+      if (isDeliverTxFailure(result!)) {
         throw new Error(
           [
-            `Error when broadcasting tx ${result.transactionHash} at height ${result.height}.`,
-            `Code: ${result.code}; Raw log: ${result.rawLog ?? ''}`,
+            `Error when broadcasting tx ${result!.transactionHash} at height ${result!.height}.`,
+            `Code: ${result!.code}; Raw log: ${result!.rawLog ?? ''}`,
           ].join(' '),
         )
       }
       return {
-        signed,
-        txHash: result.transactionHash,
+        signed: signed!.rawTx,
+        txHash: result!.transactionHash,
       }
     }
 
     const fundWithSend = async (amount: string): Promise<ExecuteWithSignDataResponse> => {
       const config = getNetworkConfig(NETWORK)
-      const signed = await client.sign(
+      const signed = await evmClient.signWithEthermint(
         txSigner,
         [
           {
@@ -522,18 +518,18 @@ export const CW20MerkleAirdrop = (client: SigningCosmWasmClient, txSigner: strin
         fee,
         '',
       )
-      const result = await client.broadcastTx(TxRaw.encode(signed).finish())
-      if (isDeliverTxFailure(result)) {
+      const result = await evmClient.broadcastTx(signed!.signedBytes)
+      if (isDeliverTxFailure(result!)) {
         throw new Error(
           [
-            `Error when broadcasting tx ${result.transactionHash} at height ${result.height}.`,
-            `Code: ${result.code}; Raw log: ${result.rawLog ?? ''}`,
+            `Error when broadcasting tx ${result!.transactionHash} at height ${result!.height}.`,
+            `Code: ${result!.code}; Raw log: ${result!.rawLog ?? ''}`,
           ].join(' '),
         )
       }
       return {
-        signed,
-        txHash: result.transactionHash,
+        signed: signed!.rawTx,
+        txHash: result!.transactionHash,
       }
     }
 
@@ -569,7 +565,7 @@ export const CW20MerkleAirdrop = (client: SigningCosmWasmClient, txSigner: strin
     admin?: string,
   ): Promise<InstantiateResponse> => {
     const fee = getExecuteFee()
-    const result = await client.instantiate(senderAddress, codeId, initMsg, label, fee, {
+    const result = await evmClient.instantiate(senderAddress, codeId, initMsg, label, fee, {
       memo: '',
       admin,
     })

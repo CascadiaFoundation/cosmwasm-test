@@ -27,6 +27,13 @@ const CW20InstantiatePage: NextPage = () => {
   const wallet = useWallet()
   const contract = useContracts().cw20Base
 
+  const codeIDState = useInputState({
+    id: 'codeID',
+    name: 'codeID',
+    title: 'CodeID',
+    placeholder: 'Contract CodeID',
+  })
+
   const nameState = useInputState({
     id: 'name',
     name: 'name',
@@ -123,7 +130,7 @@ const CW20InstantiatePage: NextPage = () => {
         },
       }
       console.log("check params======",4, msg, wallet.address )
-      return toast.promise(contract.instantiate(4, msg, msg.name, wallet.address), {
+      return toast.promise(contract.instantiate(+codeIDState.value, msg, msg.name, wallet.address), {
         loading: 'Instantiating contract...',
         error: 'Instantiation failed!',
         success: 'Instantiation success!',
@@ -158,6 +165,7 @@ const CW20InstantiatePage: NextPage = () => {
       </Conditional>
 
       <FormGroup subtitle="Basic information about your new contract" title="Contract Details">
+        <TextInput isRequired {...codeIDState} />
         <TextInput isRequired {...nameState} />
         <TextInput isRequired {...symbolState} />
         <NumberInput isRequired {...decimalsState} />

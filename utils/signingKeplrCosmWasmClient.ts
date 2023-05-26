@@ -20,6 +20,13 @@ import { SignMode } from '@terra-money/terra.js';
 import { fromBase64, toHex, toUtf8,fromAscii, fromHex, toAscii, } from "@cosmjs/encoding";
 import { sha256 } from "@cosmjs/crypto";
 import Long from 'long';
+import { getExecuteFee } from './fees';
+
+export interface ExecuteWithSignDataResponse {
+  signed: TxRaw
+  transactionHash: string
+}
+
 export default class SigningKeplrCosmWasmClient {
   client: SigningCosmWasmClient;
   private offlineSigner: OfflineDirectSigner;
@@ -118,7 +125,7 @@ export default class SigningKeplrCosmWasmClient {
       if(fee === 'auto') {
          autoFee = {
           amount: [{ denom: "aCC", amount: "1400000000000000000" }],
-          gas: "1000000000",
+          gas: "10000000000",
         };
       }else{
         autoFee = fee
@@ -150,7 +157,7 @@ export default class SigningKeplrCosmWasmClient {
       if(fee === 'auto') {
          autoFee = {
           amount: [{ denom: "aCC", amount: "1400000000000000000" }],
-          gas: "1000000000",
+          gas: "10000000000",
         };
       }else{
         autoFee = fee
@@ -255,6 +262,52 @@ export default class SigningKeplrCosmWasmClient {
 
   createDeliverTxResponseErrorMessage(result: DeliverTxResponse): string {
     return `Error when broadcasting tx ${result.transactionHash} at height ${result.height}. Code: ${result.code}; Raw log: ${result.rawLog}`;
+  }
+
+
+  public async execute(senderAddress:string,contractAddress:string,msg:any): Promise<ExecuteWithSignDataResponse> {
+    const message = {
+      typeUrl: '/cosmwasm.wasm.v1.MsgExecuteContract',
+      value: MsgExecuteContract.fromPartial({
+        sender: senderAddress,
+        contract: contractAddress,
+        msg: toUtf8(
+          JSON.stringify(msg),
+        ),
+      }),
+    };
+    const fee = getExecuteFee()
+    const signed = await this.signWithEthermint(senderAddress,[message],fee,"");
+    if(!signed) {
+      throw new Error(
+        [
+          `Error when broadcasting tx ${msg}.`,
+        ].join(' '),
+      )
+    }
+    const result = await this.broadcastTx(signed.signedBytes)
+    console.log("result", result)
+    if(!result){
+      throw new Error(
+        [
+          `Error when broad cast tx.`,
+          `txBytes: ${signed}`,
+        ].join(' '),
+      )
+    }
+    if (isDeliverTxFailure(result)) {
+      throw new Error(
+        [
+          `Error when broadcasting tx ${result.transactionHash} at height ${result.height}.`,
+          `Code: ${result.code}; Raw log: ${result.rawLog ?? ''}`,
+        ].join(' '),
+      )
+    }
+
+    return {
+      signed: signed.rawTx,
+      transactionHash: result.transactionHash,
+    }
   }
   
 }

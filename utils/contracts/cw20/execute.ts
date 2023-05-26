@@ -116,7 +116,7 @@ export const dispatchExecute = async (args: DispatchExecuteArgs) => {
   switch (args.type) {
     case 'mint': {
       const result = await messages.mint(args.recipient, args.amount.toString())
-      return result.txHash
+      return result.transactionHash
     }
     case 'burn': {
       return messages.burn(txSigner, args.amount.toString())
@@ -132,7 +132,7 @@ export const dispatchExecute = async (args: DispatchExecuteArgs) => {
     }
     case 'transfer': {
       const result = await messages.transfer(args.recipient, args.amount.toString())
-      return result.txHash
+      return result.transactionHash
     }
     case 'transfer-from': {
       return messages.transferFrom(txSigner, args.owner, args.recipient, args.amount.toString())

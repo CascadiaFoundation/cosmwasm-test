@@ -7,7 +7,8 @@ import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
 import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
 import fetchAccount from 'http/get/fetchAccount'
 import { getExecuteFee } from 'utils/fees'
-import SigningKeplrCosmWasmClient from 'utils/signingKeplrCosmWasmClient'
+import SigningKeplrCosmWasmClient,{ExecuteWithSignDataResponse} from 'utils/signingKeplrCosmWasmClient'
+
 
 const jsonToBinary = (json: Record<string, unknown>): string => {
   return toBase64(toUtf8(JSON.stringify(json)))
@@ -61,10 +62,6 @@ export interface TokenInfoResponse {
   readonly total_supply: string
 }
 
-interface ExecuteWithSignDataResponse {
-  signed: TxRaw
-  txHash: string
-}
 
 export interface CW20BaseInstance {
   readonly contractAddress: string
@@ -317,137 +314,28 @@ export const CW20Base = (keplrClient: SigningKeplrCosmWasmClient, txSigner: stri
     }
 
     const mint = async (recipient: string, amount: string): Promise<ExecuteWithSignDataResponse> => {
-
-      const signed = await keplrClient.signWithEthermint(
-        txSigner,
-        [
-          {
-            typeUrl: '/cosmwasm.wasm.v1.MsgExecuteContract',
-            value: MsgExecuteContract.fromPartial({
-              sender: txSigner,
-              contract: contractAddress,
-              msg: toUtf8(
-                JSON.stringify({
-                  mint: { recipient, amount },
-                }),
-              ),
-            }),
-          },
-        ],
-        fee,
-        '',
-      )
-      if(!signed){
-        throw new Error(
-          [
-            `Error when signing transaction.`,
-            `recipient: ${recipient}`,
-            `amount: ${amount}`,
-          ].join(' '),
-        )
-      }
-      const result = await keplrClient.broadcastTx(signed.signedBytes)
-
-      if(!result){
-        throw new Error(
-          [
-            `Error when broad cast tx.`,
-            `txBytes: ${signed}`,
-          ].join(' '),
-        )
-      }
-
-      if (isDeliverTxFailure(result)) {
-        throw new Error(
-          [
-            `Error when broadcasting tx ${result.transactionHash} at height ${result.height}.`,
-            `Code: ${result.code}; Raw log: ${result.rawLog ?? ''}`,
-          ].join(' '),
-        )
-      }
-      return {
-        signed: signed.rawTx,
-        txHash: result.transactionHash,
-      }
+      const res = await keplrClient.execute(txSigner,contractAddress,{ mint: { recipient, amount }})
+      return res
     }
 
     const transfer = async (recipient: string, amount: string): Promise<ExecuteWithSignDataResponse> => {
-      const signed = await keplrClient.signWithEthermint(
-        txSigner,
-        [
-          {
-            typeUrl: '/cosmwasm.wasm.v1.MsgExecuteContract',
-            value: MsgExecuteContract.fromPartial({
-              sender: txSigner,
-              contract: contractAddress,
-              msg: toUtf8(
-                JSON.stringify({
-                  transfer: { recipient, amount },
-                }),
-              ),
-            }),
-          },
-        ],
-        fee,
-        '',
-      )
-      if(!signed){
-        throw new Error(
-          [
-            `Error when signing transaction.`,
-            `recipient: ${recipient}`,
-            `amount: ${amount}`,
-          ].join(' '),
-        )
-      }
-
-      const result = await keplrClient.broadcastTx(signed.signedBytes)
-      if(!result){
-        throw new Error(
-          [
-            `Error when broad cast tx.`,
-            `txBytes: ${signed}`,
-          ].join(' '),
-        )
-      }
-
-      if (isDeliverTxFailure(result)) {
-        throw new Error(
-          [
-            `Error when broadcasting tx ${result.transactionHash} at height ${result.height}.`,
-            `Code: ${result.code}; Raw log: ${result.rawLog ?? ''}`,
-          ].join(' '),
-        )
-      }
-      return {
-        signed:signed.rawTx,
-        txHash: result.transactionHash,
-      }
+      const res = await keplrClient.execute(txSigner,contractAddress,{transfer: { recipient, amount },})
+      return res
     }
 
     const burn = async (senderAddress: string, amount: string): Promise<string> => {
-      const result = await keplrClient.client.execute(senderAddress, contractAddress, { burn: { amount } }, 'auto')
-      return result.transactionHash
+      const res = await keplrClient.execute(senderAddress,contractAddress,{ burn: { amount } })
+      return res.transactionHash
     }
 
     const increaseAllowance = async (senderAddress: string, spender: string, amount: string): Promise<string> => {
-      const result = await keplrClient.client.execute(
-        senderAddress,
-        contractAddress,
-        { increase_allowance: { spender, amount } },
-        'auto',
-      )
-      return result.transactionHash
+      const res = await keplrClient.execute(senderAddress,contractAddress,{ increase_allowance: { spender, amount }})
+      return res.transactionHash
     }
 
     const decreaseAllowance = async (senderAddress: string, spender: string, amount: string): Promise<string> => {
-      const result = await keplrClient.client.execute(
-        senderAddress,
-        contractAddress,
-        { decrease_allowance: { spender, amount } },
-        'auto',
-      )
-      return result.transactionHash
+      const res = await keplrClient.execute(senderAddress,contractAddress,{ decrease_allowance: { spender, amount } })
+      return res.transactionHash
     }
 
     const transferFrom = async (
@@ -456,13 +344,8 @@ export const CW20Base = (keplrClient: SigningKeplrCosmWasmClient, txSigner: stri
       recipient: string,
       amount: string,
     ): Promise<string> => {
-      const result = await keplrClient.client.execute(
-        senderAddress,
-        contractAddress,
-        { transfer_from: { owner, recipient, amount } },
-        'auto',
-      )
-      return result.transactionHash
+      const res = await keplrClient.execute(senderAddress,contractAddress,{ transfer_from: { owner, recipient, amount } })
+      return res.transactionHash
     }
 
     const send = async (
@@ -471,13 +354,9 @@ export const CW20Base = (keplrClient: SigningKeplrCosmWasmClient, txSigner: stri
       amount: string,
       msg: Record<string, unknown>,
     ): Promise<string> => {
-      const result = await keplrClient.client.execute(
-        senderAddress,
-        contractAddress,
-        { send: { contract, amount, msg: jsonToBinary(msg) } },
-        'auto',
-      )
-      return result.transactionHash
+
+      const res = await keplrClient.execute(senderAddress,contractAddress,{ send: { contract, amount, msg: jsonToBinary(msg) } })
+      return res.transactionHash
     }
 
     const sendFrom = async (
@@ -487,18 +366,15 @@ export const CW20Base = (keplrClient: SigningKeplrCosmWasmClient, txSigner: stri
       amount: string,
       msg: Record<string, unknown>,
     ): Promise<string> => {
-      const result = await keplrClient.client.execute(
-        senderAddress,
-        contractAddress,
-        { send_from: { owner, contract, amount, msg: jsonToBinary(msg) } },
-        'auto',
-      )
-      return result.transactionHash
+
+      const res = await keplrClient.execute(senderAddress,contractAddress,{ send_from: { owner, contract, amount, msg: jsonToBinary(msg) } })
+      return res.transactionHash
     }
 
     const burnFrom = async (senderAddress: string, owner: string, amount: string): Promise<string> => {
-      const result = await keplrClient.client.execute(senderAddress, contractAddress, { burn_from: { owner, amount } }, 'auto')
-      return result.transactionHash
+      
+      const res = await keplrClient.execute(senderAddress,contractAddress,{ burn_from: { owner, amount } })
+      return res.transactionHash
     }
 
     const updateMarketing = async (
@@ -507,18 +383,14 @@ export const CW20Base = (keplrClient: SigningKeplrCosmWasmClient, txSigner: stri
       description: string,
       marketing: string,
     ): Promise<string> => {
-      const result = await keplrClient.client.execute(
-        senderAddress,
-        contractAddress,
-        { update_marketing: { project, description, marketing } },
-        'auto',
-      )
-      return result.transactionHash
+      const res = await keplrClient.execute(senderAddress,contractAddress,{ update_marketing: { project, description, marketing } })
+      return res.transactionHash
     }
 
     const uploadLogo = async (senderAddress: string, logo: Logo): Promise<string> => {
-      const result = await keplrClient.client.execute(senderAddress, contractAddress, { upload_logo: { ...logo } }, 'auto')
-      return result.transactionHash
+      
+      const res = await keplrClient.execute(senderAddress,contractAddress,{ upload_logo: { ...logo } })
+      return res.transactionHash
     }
 
     return {

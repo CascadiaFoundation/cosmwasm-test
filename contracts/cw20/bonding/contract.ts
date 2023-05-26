@@ -2,6 +2,7 @@ import type { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { toBase64, toUtf8 } from '@cosmjs/encoding'
 import type { Decimal } from '@cosmjs/math'
 import { coin } from '@cosmjs/proto-signing'
+import SigningKeplrCosmWasmClient from 'utils/signingKeplrCosmWasmClient'
 
 const jsonToBinary = (json: Record<string, unknown>): string => {
   return toBase64(toUtf8(JSON.stringify(json)))
@@ -72,43 +73,43 @@ export interface CW20BondingContract {
   use: (contractAddress: string) => CW20BondingInstance
 }
 
-export const CW20Bonding = (client: SigningCosmWasmClient): CW20BondingContract => {
+export const CW20Bonding = (keplrClient: SigningKeplrCosmWasmClient): CW20BondingContract => {
   const use = (contractAddress: string): CW20BondingInstance => {
     const balance = async (address: string): Promise<string> => {
-      const result = await client.queryContractSmart(contractAddress, {
+      const result = await keplrClient.client.queryContractSmart(contractAddress, {
         balance: { address },
       })
       return result.balance
     }
 
     const allowance = async (owner: string, spender: string): Promise<AllowanceResponse> => {
-      return client.queryContractSmart(contractAddress, {
+      return keplrClient.client.queryContractSmart(contractAddress, {
         allowance: { owner, spender },
       })
     }
 
     const tokenInfo = async (): Promise<TokenInfoResponse> => {
-      return client.queryContractSmart(contractAddress, { token_info: {} })
+      return keplrClient.client.queryContractSmart(contractAddress, { token_info: {} })
     }
 
     const curveInfo = async (): Promise<CurveInfoResponse> => {
-      return client.queryContractSmart(contractAddress, { curve_info: {} })
+      return keplrClient.client.queryContractSmart(contractAddress, { curve_info: {} })
     }
 
     const buy = async (senderAddress: string, amount: string): Promise<string> => {
-      const result = await client.execute(senderAddress, contractAddress, { buy: {} }, 'auto', '', [
+      const result = await keplrClient.client.execute(senderAddress, contractAddress, { buy: {} }, 'auto', '', [
         coin(amount, 'ucascadiadx'),
       ])
       return result.transactionHash
     }
 
     const transfer = async (senderAddress: string, recipient: string, amount: string): Promise<string> => {
-      const result = await client.execute(senderAddress, contractAddress, { transfer: { recipient, amount } }, 'auto')
+      const result = await keplrClient.client.execute(senderAddress, contractAddress, { transfer: { recipient, amount } }, 'auto')
       return result.transactionHash
     }
 
     const burn = async (senderAddress: string, amount: string): Promise<string> => {
-      const result = await client.execute(senderAddress, contractAddress, { burn: { amount } }, 'auto')
+      const result = await keplrClient.client.execute(senderAddress, contractAddress, { burn: { amount } }, 'auto')
       return result.transactionHash
     }
 
@@ -118,11 +119,10 @@ export const CW20Bonding = (client: SigningCosmWasmClient): CW20BondingContract 
       amount: string,
       expires?: Expiration,
     ): Promise<string> => {
-      const result = await client.execute(
+      const result = await keplrClient.execute(
         senderAddress,
         contractAddress,
         { increase_allowance: { spender, amount, expires } },
-        'auto',
       )
       return result.transactionHash
     }
@@ -133,11 +133,10 @@ export const CW20Bonding = (client: SigningCosmWasmClient): CW20BondingContract 
       amount: string,
       expires?: Expiration,
     ): Promise<string> => {
-      const result = await client.execute(
+      const result = await keplrClient.execute(
         senderAddress,
         contractAddress,
         { decrease_allowance: { spender, amount, expires } },
-        'auto',
       )
       return result.transactionHash
     }
@@ -148,11 +147,10 @@ export const CW20Bonding = (client: SigningCosmWasmClient): CW20BondingContract 
       recipient: string,
       amount: string,
     ): Promise<string> => {
-      const result = await client.execute(
+      const result = await keplrClient.execute(
         senderAddress,
         contractAddress,
         { transfer_from: { owner, recipient, amount } },
-        'auto',
       )
       return result.transactionHash
     }
@@ -163,11 +161,10 @@ export const CW20Bonding = (client: SigningCosmWasmClient): CW20BondingContract 
       amount: string,
       msg: Record<string, unknown>,
     ): Promise<string> => {
-      const result = await client.execute(
+      const result = await keplrClient.execute(
         senderAddress,
         contractAddress,
         { send: { contract, amount, msg: jsonToBinary(msg) } },
-        'auto',
       )
       return result.transactionHash
     }
@@ -179,17 +176,16 @@ export const CW20Bonding = (client: SigningCosmWasmClient): CW20BondingContract 
       amount: string,
       msg: Record<string, unknown>,
     ): Promise<string> => {
-      const result = await client.execute(
+      const result = await keplrClient.execute(
         senderAddress,
         contractAddress,
         { send_from: { owner, contract, amount, msg: jsonToBinary(msg) } },
-        'auto',
       )
       return result.transactionHash
     }
 
     const burnFrom = async (senderAddress: string, owner: string, amount: string): Promise<string> => {
-      const result = await client.execute(senderAddress, contractAddress, { send_from: { owner, amount } }, 'auto')
+      const result = await keplrClient.execute(senderAddress, contractAddress, { send_from: { owner, amount } })
       return result.transactionHash
     }
 
@@ -218,7 +214,7 @@ export const CW20Bonding = (client: SigningCosmWasmClient): CW20BondingContract 
     label: string,
     admin?: string,
   ): Promise<InstantiateResponse> => {
-    const result = await client.instantiate(senderAddress, codeId, initMsg, label, 'auto', {
+    const result = await keplrClient.instantiate(senderAddress, codeId, initMsg, label, 'auto', {
       memo: '',
       admin,
     })

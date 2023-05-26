@@ -23,8 +23,15 @@ import { links } from 'utils/links'
 
 const CW721BaseInstantiatePage: NextPage = () => {
   const wallet = useWallet()
-  const contract = useContracts().cw1Subkeys
+  const contract = useContracts().cw721Base
 
+  const codeIDState = useInputState({
+    id: 'codeID',
+    name: 'codeID',
+    title: 'CodeID',
+    placeholder: 'Contract CodeID',
+  })
+  
   const nameState = useInputState({
     id: 'name',
     name: 'name',
@@ -58,7 +65,7 @@ const CW721BaseInstantiatePage: NextPage = () => {
         minter: minterState.value,
       }
       return toast.promise(
-        contract.instantiate(CW721_BASE_CODE_ID, msg, 'CascadiaTools CW721 Base Contract', wallet.address),
+        contract.instantiate(+codeIDState.value, msg, 'CascadiaTools CW721 Base Contract', wallet.address),
         {
           loading: 'Instantiating contract...',
           error: 'Instantiation failed!',
@@ -95,6 +102,7 @@ const CW721BaseInstantiatePage: NextPage = () => {
       </Conditional>
 
       <FormGroup subtitle="Basic information about your new contract" title="Contract Details">
+        <TextInput isRequired {...codeIDState} />
         <TextInput isRequired {...nameState} />
         <TextInput isRequired {...symbolState} />
         <TextInput isRequired {...minterState} />

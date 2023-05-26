@@ -5,6 +5,7 @@ import type { Coin } from '@cosmjs/proto-signing'
 // import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
 // import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
 import { getExecuteFee } from 'utils/fees'
+import SigningKeplrCosmWasmClient from 'utils/signingKeplrCosmWasmClient'
 
 const jsonToBinary = (json: Record<string, unknown>): string => {
   return toBase64(toUtf8(JSON.stringify(json)))
@@ -171,133 +172,129 @@ export interface CW721BaseContract {
   messages: () => CW721BaseMessages
 }
 
-export const CW721Base = (client: SigningCosmWasmClient, txSigner: string): CW721BaseContract => {
+export const CW721Base = (evmClient: SigningKeplrCosmWasmClient, txSigner: string): CW721BaseContract => {
   const fee = getExecuteFee()
 
   const use = (contractAddress: string): CW721BaseInstance => {
     const ownerOf = async (tokenId: string, includeExpired?: boolean) => {
-      return client.queryContractSmart(contractAddress, {
+      return evmClient.client.queryContractSmart(contractAddress, {
         owner_of: { token_id: tokenId, include_expired: includeExpired },
       })
     }
 
     const approval = async (tokenId: string, spender: string, includeExpired?: boolean) => {
-      return client.queryContractSmart(contractAddress, {
+      return evmClient.client.queryContractSmart(contractAddress, {
         approval: { token_id: tokenId, spender, include_expired: includeExpired },
       })
     }
 
     const approvals = async (tokenId: string, includeExpired?: boolean) => {
-      return client.queryContractSmart(contractAddress, {
+      return evmClient.client.queryContractSmart(contractAddress, {
         approvals: { token_id: tokenId, include_expired: includeExpired },
       })
     }
 
     const allOperators = async (owner: string, includeExpired?: boolean, startAfter?: string, limit?: number) => {
-      return client.queryContractSmart(contractAddress, {
+      return evmClient.client.queryContractSmart(contractAddress, {
         all_operators: { owner, include_expired: includeExpired, start_after: startAfter, limit },
       })
     }
 
     const numTokens = async () => {
-      return client.queryContractSmart(contractAddress, {
+      return evmClient.client.queryContractSmart(contractAddress, {
         num_tokens: {},
       })
     }
 
     const contractInfo = async () => {
-      return client.queryContractSmart(contractAddress, {
+      return evmClient.client.queryContractSmart(contractAddress, {
         contract_info: {},
       })
     }
 
     const nftInfo = async (tokenId: string) => {
-      return client.queryContractSmart(contractAddress, {
+      return evmClient.client.queryContractSmart(contractAddress, {
         nft_info: { token_id: tokenId },
       })
     }
 
     const allNftInfo = async (tokenId: string, includeExpired?: boolean) => {
-      return client.queryContractSmart(contractAddress, {
+      return evmClient.client.queryContractSmart(contractAddress, {
         all_nft_info: { token_id: tokenId, include_expired: includeExpired },
       })
     }
 
     const tokens = async (owner: string, startAfter?: string, limit?: number) => {
-      return client.queryContractSmart(contractAddress, {
+      return evmClient.client.queryContractSmart(contractAddress, {
         tokens: { owner, start_after: startAfter, limit },
       })
     }
 
     const allTokens = async (startAfter?: string, limit?: number) => {
-      return client.queryContractSmart(contractAddress, {
+      return evmClient.client.queryContractSmart(contractAddress, {
         all_tokens: { start_after: startAfter, limit },
       })
     }
 
     const minter = async () => {
-      return client.queryContractSmart(contractAddress, {
+      return evmClient.client.queryContractSmart(contractAddress, {
         minter: {},
       })
     }
 
     const transferNft = async (recipient: string, tokenId: string): Promise<string> => {
-      const result = await client.execute(
+      const result = await evmClient.execute(
         txSigner,
         contractAddress,
         { transfer_nft: { recipient, token_id: tokenId } },
-        fee,
       )
       return result.transactionHash
     }
 
     const sendNft = async (contract: string, tokenId: string, msg: Record<string, unknown>): Promise<string> => {
-      const result = await client.execute(
+      const result = await evmClient.execute(
         txSigner,
         contractAddress,
         { send_nft: { contract, token_id: tokenId, msg: jsonToBinary(msg) } },
-        fee,
       )
       return result.transactionHash
     }
 
     const approve = async (spender: string, tokenId: string, expires?: Expiration): Promise<string> => {
-      const result = await client.execute(
+      const result = await evmClient.execute(
         txSigner,
         contractAddress,
         { approve: { spender, token_id: tokenId, expires } },
-        fee,
       )
       return result.transactionHash
     }
 
     const revoke = async (spender: string, tokenId: string): Promise<string> => {
-      const result = await client.execute(txSigner, contractAddress, { revoke: { spender, token_id: tokenId } }, fee)
+      const result = await evmClient.execute(txSigner, contractAddress, { revoke: { spender, token_id: tokenId } })
       return result.transactionHash
     }
 
     const approveAll = async (operator: string, expires?: Expiration): Promise<string> => {
-      const result = await client.execute(txSigner, contractAddress, { approve_all: { operator, expires } }, fee)
+      const result = await evmClient.execute(txSigner, contractAddress, { approve_all: { operator, expires } }, )
       return result.transactionHash
     }
 
     const revokeAll = async (operator: string): Promise<string> => {
-      const result = await client.execute(txSigner, contractAddress, { revoke_all: { operator } }, fee)
+      const result = await evmClient.execute(txSigner, contractAddress, { revoke_all: { operator } })
       return result.transactionHash
     }
 
     const mint = async (tokenId: string, owner: string, tokenUri?: string): Promise<string> => {
-      const result = await client.execute(
+      const result = await evmClient.execute(
         txSigner,
         contractAddress,
         { mint: { token_id: tokenId, owner, token_uri: tokenUri } },
-        fee,
       )
       return result.transactionHash
     }
 
     const burn = async (tokenId: string): Promise<string> => {
-      const result = await client.execute(txSigner, contractAddress, { burn: { token_id: tokenId } }, fee)
+      const result = await evmClient.execute(txSigner, contractAddress, { burn: { token_id: tokenId } })
       return result.transactionHash
     }
 
@@ -332,7 +329,7 @@ export const CW721Base = (client: SigningCosmWasmClient, txSigner: string): CW72
     label: string,
     admin?: string,
   ): Promise<InstantiateResponse> => {
-    const result = await client.instantiate(senderAddress, codeId, initMsg, label, 'auto', {
+    const result = await evmClient.instantiate(txSigner, codeId, initMsg, label, 'auto', {
       memo: '',
       admin,
     })

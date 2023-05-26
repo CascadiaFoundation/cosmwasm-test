@@ -2,6 +2,10 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/contracts/cw20/base": "pages/contracts/cw20/base.js",
-  "/404": "pages/404.js"
+  "/contracts/cw1/subkeys": "pages/contracts/cw1/subkeys.js",
+  "/contracts/cw1/subkeys/instantiate": "pages/contracts/cw1/subkeys/instantiate.js",
+  "/contracts/cw1/subkeys/query": "pages/contracts/cw1/subkeys/query.js",
+  "/contracts/cw721/base": "pages/contracts/cw721/base.js",
+  "/sign-verify": "pages/sign-verify.js",
+  "/request-tokens": "pages/request-tokens.js"
 }

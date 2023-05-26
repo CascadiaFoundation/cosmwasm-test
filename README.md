@@ -16,9 +16,6 @@
 - Yarn
 - Keplr Wallet browser extension
 
-**Optional**
-
-- S3 bucket instance (minio, etc.)
 
 ## Setup local development
 
@@ -43,7 +40,6 @@ yarn lint
 ## References
 
 - https://docs.cascadiad.tools
-- https://docs.cascadiad.tools/docs/dashboards/airdrop/introduction
 - https://docs.cascadiad.tools/docs/dashboards/airdrop/guide
 - https://docs.cascadiad.tools/docs/dashboards/cw-1/subkeys/introduction
 - https://docs.cascadiad.tools/docs/dashboards/cw-20/base/introduction

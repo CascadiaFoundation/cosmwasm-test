@@ -15,11 +15,6 @@
   ],
   "rootMainFiles": [],
   "pages": {
-    "/404": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/404.js"
-    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -30,10 +25,35 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/contracts/cw20/base": [
+    "/contracts/cw1/subkeys": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/contracts/cw20/base.js"
+      "static/chunks/pages/contracts/cw1/subkeys.js"
+    ],
+    "/contracts/cw1/subkeys/instantiate": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/contracts/cw1/subkeys/instantiate.js"
+    ],
+    "/contracts/cw1/subkeys/query": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/contracts/cw1/subkeys/query.js"
+    ],
+    "/contracts/cw721/base": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/contracts/cw721/base.js"
+    ],
+    "/request-tokens": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/request-tokens.js"
+    ],
+    "/sign-verify": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/sign-verify.js"
     ]
   },
   "ampFirstPages": []
