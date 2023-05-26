@@ -33,7 +33,7 @@ export const uniTestnetConfig: AppConfig = {
   stakingToken: 'aCC',
   coinMap: {
     aCC: { denom: 'aCC', fractionalDigits: 0 },
-    CC: { denom: 'aCC', fractionalDigits: 18 }
+    CC: { denom: 'CC', fractionalDigits: 18 }
   },
   gasPrice: 200000,
   fees: {
