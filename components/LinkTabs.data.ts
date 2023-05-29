@@ -53,3 +53,16 @@ export const cw721BaseLinkTabs: LinkTabProps[] = [
     href: '/contracts/cw721/base/execute',
   },
 ]
+
+export const wasmLinkTabs: LinkTabProps[] = [
+  {
+    title: 'Instantiate',
+    description: `Create a new Wasm contract`,
+    href: '/contracts/general/instantiate',
+  },
+  {
+    title: 'Execute',
+    description: `Execute Wasm contract message`,
+    href: '/contracts/general/execute',
+  },
+]

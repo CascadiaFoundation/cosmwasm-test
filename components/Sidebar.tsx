@@ -15,6 +15,7 @@ const routes = [
   { text: 'CW1 Subkeys', href: `/contracts/cw1/subkeys` },
   { text: 'CW20 Base', href: `/contracts/cw20/base` },
   { text: 'CW721 Base', href: `/contracts/cw721/base` },
+  { text: 'General', href: `/contracts/general` },
   { text: 'Sign and Verify', href: `/sign-verify` },
   { text: 'Token Faucet', href: `/request-tokens` },
 ]

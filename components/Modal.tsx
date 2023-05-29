@@ -22,10 +22,10 @@ export const Modal = () => {
   return (
     <>
       {showModal ? (
-        <div className="flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 justify-center items-center outline-none focus:outline-none">
-          <div className="relative my-6 mx-auto w-auto max-w-3xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
+          <div className="relative w-auto max-w-3xl mx-auto my-6">
             <div className="flex relative flex-col w-full bg-stone-800 rounded-lg border-[1px] border-slate-200/20 border-solid outline-none focus:outline-none shadow-lg">
-              <div className="flex justify-between items-start p-5 rounded-t border-b border-slate-200/20 border-solid">
+              <div className="flex items-start justify-between p-5 border-b border-solid rounded-t border-slate-200/20">
                 <h3 className="text-3xl font-bold">Before using CascadiaTools...</h3>
               </div>
               <div className="relative flex-auto p-6 my-4">
@@ -56,12 +56,11 @@ export const Modal = () => {
                   title="I understand the risks and disclaimer of using CascadiaTools"
                 />
               </div>
-              <div className="flex justify-end items-center p-6 mt-1">
+              <div className="flex items-center justify-end p-6 mt-1">
                 <Button
                   className={clsx({ 'opacity-50': isButtonDisabled })}
                   disabled={isButtonDisabled}
                   isWide
-                  leftIcon={<FaAsterisk />}
                   onClick={accept}
                 >
                   Enter CascadiaTools

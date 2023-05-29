@@ -5,15 +5,17 @@ import { ContractPageHeader } from 'components/ContractPageHeader'
 import { FormGroup } from 'components/FormGroup'
 import { TextInput } from 'components/forms/FormInput'
 import { useInputState } from 'components/forms/FormInput.hooks'
+import { FormTextArea, JsonTextArea } from 'components/forms/FormTextArea'
 import { JsonPreview } from 'components/JsonPreview'
 import { LinkTabs } from 'components/LinkTabs'
-import { cw721BaseLinkTabs } from 'components/LinkTabs.data'
+import { wasmLinkTabs } from 'components/LinkTabs.data'
+import { TextArea } from 'components/TextArea'
 import { useContracts } from 'contexts/contracts'
 import { useWallet } from 'contexts/wallet'
 import type { InstantiateResponse } from 'contracts/cw721/base'
 import type { NextPage } from 'next'
 import { NextSeo } from 'next-seo'
-import type { FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { toast } from 'react-hot-toast'
 import { FaAsterisk } from 'react-icons/fa'
 import { useMutation } from 'react-query'
@@ -21,9 +23,9 @@ import { CW721_BASE_CODE_ID } from 'utils/constants'
 import { withMetadata } from 'utils/layout'
 import { links } from 'utils/links'
 
-const CW721BaseInstantiatePage: NextPage = () => {
+const GeneralInstantiatePage: NextPage = () => {
   const wallet = useWallet()
-  const contract = useContracts().cw721Base
+  const contract = useContracts().wasm
 
   const codeIDState = useInputState({
     id: 'codeID',
@@ -32,26 +34,14 @@ const CW721BaseInstantiatePage: NextPage = () => {
     placeholder: 'Contract CodeID',
   })
   
-  const nameState = useInputState({
-    id: 'name',
-    name: 'name',
-    title: 'Name',
-    placeholder: 'My Awesome CW721 Contract',
+  const messageState = useInputState({
+    id: 'message',
+    name: 'message',
+    title: 'Message',
+    subtitle: 'Message content for current transaction',
+    defaultValue: JSON.stringify({ key: 'value' }, null, 2),
   })
 
-  const symbolState = useInputState({
-    id: 'symbol',
-    name: 'symbol',
-    title: 'Symbol',
-    placeholder: 'AWSM',
-  })
-
-  const minterState = useInputState({
-    id: 'minter-address',
-    name: 'minterAddress',
-    title: 'Minter Address',
-    placeholder: 'casadia1234567890abcdefghijklmnopqrstuvwxyz...',
-  })
 
   const { data, isLoading, mutate } = useMutation(
     async (event: FormEvent): Promise<InstantiateResponse | null> => {
@@ -59,13 +49,10 @@ const CW721BaseInstantiatePage: NextPage = () => {
       if (!contract) {
         throw new Error('Smart contract connection failed')
       }
-      const msg = {
-        name: nameState.value,
-        symbol: symbolState.value,
-        minter: minterState.value,
-      }
+
+      const msg = messageState.value
       return toast.promise(
-        contract.instantiate(+codeIDState.value, msg, 'CascadiaTools CW721 Base Contract', wallet.address),
+        contract.instantiate(+codeIDState.value, JSON.parse(messageState.value), 'CascadiaTools Wasm Base Contract', wallet.address),
         {
           loading: 'Instantiating contract...',
           error: 'Instantiation failed!',
@@ -86,11 +73,11 @@ const CW721BaseInstantiatePage: NextPage = () => {
     <form className="px-12 py-6 space-y-4" onSubmit={mutate}>
       <NextSeo title="Instantiate CW721 Base Contract" />
       <ContractPageHeader
-        description="CW721 Base is a specification for non fungible tokens based on CosmWasm."
+        description="Wasm Contract"
         link={links['Docs CW721 Base']}
-        title="CW721 Base Contract"
+        title="Wasm Contract"
       />
-      <LinkTabs activeIndex={0} data={cw721BaseLinkTabs} />
+      <LinkTabs activeIndex={0} data={wasmLinkTabs} />
 
       <Conditional test={Boolean(data)}>
         <Alert type="info">
@@ -103,9 +90,7 @@ const CW721BaseInstantiatePage: NextPage = () => {
 
       <FormGroup subtitle="Basic information about your new contract" title="Contract Details">
         <TextInput isRequired {...codeIDState} />
-        <TextInput isRequired {...nameState} />
-        <TextInput isRequired {...symbolState} />
-        <TextInput isRequired {...minterState} />
+        <JsonTextArea {...messageState} />
       </FormGroup>
 
       <div className="flex items-center p-4">
@@ -118,4 +103,4 @@ const CW721BaseInstantiatePage: NextPage = () => {
   )
 }
 
-export default withMetadata(CW721BaseInstantiatePage, { center: false })
+export default withMetadata(GeneralInstantiatePage, { center: false })
