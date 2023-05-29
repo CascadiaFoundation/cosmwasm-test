@@ -16,39 +16,55 @@
 - Yarn
 - Keplr Wallet browser extension
 
+## Local Development Setup
 
-## Setup local development
+Follow these steps to set up the project for local development:
 
-```sh
-# clone repository
-git clone https://github.com/CosmosContracts/cascadiad-tools.git
-cd cascadiad-tools
+1. Clone the repository and navigate into the project directory:
 
-# install dependencies
-yarn install
+    ```sh
+    git clone https://github.com/CosmosContracts/cascadiad-tools.git
+    cd cascadiad-tools
+    ```
 
-# copy env file and fill in values
-cp .env.example .env
+2. Install dependencies:
 
-# run development server
-yarn dev
+    ```sh
+    yarn install
+    ```
 
-# (optional) lint and format project
-yarn lint
-```
+3. Copy the example environment file and fill in the values:
 
-## References
+    ```sh
+    cp .env.example .env
+    ```
 
-- https://docs.cascadiad.tools
-- https://docs.cascadiad.tools/docs/dashboards/airdrop/guide
-- https://docs.cascadiad.tools/docs/dashboards/cw-1/subkeys/introduction
-- https://docs.cascadiad.tools/docs/dashboards/cw-20/base/introduction
-- https://docs.cascadiad.tools/docs/dashboards/cw-721/base/introduction
+4. Start the development server:
 
-## Questions
+    ```sh
+    yarn dev
+    ```
 
-- [Discord](https://discord.gg/cascadiad)
-- [Telegram](https://t.me/cascadiadNetwork)
-- [Twitter](https://twitter.com/CascadiaTools)
+5. (Optional) Lint and format the project:
 
-<img src="./public/icon.png" height="96" align="right" />
+    ```sh
+    yarn lint
+    ```
+
+## How to Use
+
+### Link Wallet
+
+If you want to link your own network, please modify the `config/network.ts` file. Note that some APIs have CORS issues. This can be addressed on the backend side when deploying the chain to infrastructure. As a temporary solution, we can use a CORS Allow browser extension.
+
+### Interface with a WASM Contract
+
+1. **Upload contract**: You can upload the contract using the "Upload" tab in the sidebar. After uploading the code, you can get transaction details. Remember the codeID for the next step.
+
+2. **Instantiate contract**: For CW20, CW721 base contracts, you can use specific interfaces in the sidebar. For general contracts, you will need to input low-level JSON data directly. After instantiation, you can get the contract address. This address can be used to execute messages.
+
+3. **Execute message**: You can input JSON-style messages to run transactions with the contract address.
+
+## Integration in Other Projects
+
+Our chain has integrated the Evmos module, causing the wallet generation algorithm to differ from the original. CosmJS doesn't directly support this yet, so we have customized the CosmWasm client of `cosmjs` to interact with our chain. You can find the detailed implementation in `signingKeplrCosmWasmClient.ts`.
