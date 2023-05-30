@@ -7,7 +7,7 @@ import { NETWORK } from './constants'
 
 export const getSignatureVerificationData = async (wallet: WalletContextType, signedData: TxRaw) => {
   const client = wallet.getClient()
-  const account = await client.getAccount(wallet.address)
+  const account = await client.client.getAccount(wallet.address)
   return {
     address: wallet.address,
     chainId: getConfig(NETWORK).chainId,

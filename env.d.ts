@@ -34,6 +34,23 @@ declare namespace NodeJS {
     readonly NEXT_PUBLIC_S3_KEY: string
     readonly NEXT_PUBLIC_S3_REGION: string
     readonly NEXT_PUBLIC_S3_SECRET: string
+
+
+    readonly NEXT_PUBLIC_CHAIN_ID:string
+    readonly NEXT_PUBLIC_CHAIN_NAME:string
+    readonly NEXT_PUBLIC_ADDRESS_PREFIX:string
+    readonly NEXT_PUBLIC_RPC_URL:string
+    readonly NEXT_PUBLIC_REST_URL:string
+    readonly NEXT_PUBLIC_HTTP_URL:string 
+    readonly NEXT_PUBLIC_FAUCET_URL:string 
+    readonly NEXT_PUBLIC_FEE_TOKEN:string
+    readonly NEXT_PUBLIC_STAKING_TOKEN:string
+    readonly NEXT_PUBLIC_MAIN_DENOM:string
+    readonly NEXT_PUBLIC_MAIN_DENOM_FRACTIONAL_DIGITS:number
+    readonly NEXT_PUBLIC_GAS_PRICE:number
+    readonly NEXT_PUBLIC_FEE_UPLOAD:number
+    readonly NEXT_PUBLIC_FEE_INIT:number
+    readonly NEXT_PUBLIC_FEE_EXECUTE:number
   }
 }
 
