@@ -31,9 +31,9 @@ export const ExecuteCombobox = ({ value, onChange }: ExecuteComboboxProps) => {
       <div className="relative">
         <Combobox.Input
           className={clsx(
-            'w-full bg-white/10 rounded border-2 border-white/20 form-input',
-            'placeholder:text-white/50',
-            'focus:ring focus:ring-plumbus-20',
+            'w-full bg-transparent border border-dark/20 form-input',
+            'placeholder:text-dark/50',
+            'focus:ring-1 focus:ring-primary-400',
           )}
           displayValue={(val?: ExecuteListItem) => val?.name ?? ''}
           id="message-type"

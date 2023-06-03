@@ -98,18 +98,18 @@ const RequestTokens: NextPage = () => {
           value={walletAddress}
         />
         <TextInput
-          className="w-[35%]"
+          className="w-[35%] text-right"
           disabled
           id="current-balance"
           name="current-balance"
           title="Current Balance"
-          value={`${Number(balance) / 1000000} cascadiadx`}
+          value={`${Number(balance) / 1000000} aCC`}
         />
       </div>
       <div className="flex w-full">
         <Button
           className={clsx(
-            'flex items-center py-2 px-8 mr-5 space-x-2 font-bold bg-twitter rounded',
+            'flex items-center py-2 px-8 mr-5 space-x-2 font-bold bg-primary-400',
             'hover:bg-twitter transition hover:translate-y-[-1px]',
             {
               'opacity-50 cursor-not-allowed pointer-events-none': walletAddress === '',

@@ -67,11 +67,11 @@ export function Address({ id, isLast, onAdd, onChange, onRemove }: AddressProps)
       <AddressInput {...addressState} />
       <div className="flex justify-end items-end pb-2 w-8">
         <button
-          className="flex justify-center items-center p-2 bg-plumbus-80 hover:bg-plumbus-60 rounded-full"
+          className="flex justify-center items-center p-2 bg-primary-400 hover:bg-primary-300 rounded-full"
           onClick={() => (isLast ? onAdd() : onRemove(id))}
           type="button"
         >
-          <Icon className="w-3 h-3" />
+          <Icon className="w-3 h-3 text-white" />
         </button>
       </div>
     </div>

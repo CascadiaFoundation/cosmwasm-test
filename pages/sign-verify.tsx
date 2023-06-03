@@ -8,6 +8,7 @@ import { JsonPreview } from 'components/JsonPreview'
 import { TextArea } from 'components/TextArea'
 import { getConfig } from 'config'
 import { useWallet } from 'contexts/wallet'
+import fetchAccount from 'http/get/fetchAccount'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { NextSeo } from 'next-seo'
@@ -15,7 +16,6 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { NETWORK, WEBSITE_URL } from 'utils/constants'
 import { withMetadata } from 'utils/layout'
-import fetchAccount from 'http/get/fetchAccount'
 
 const SignAndVerify: NextPage = () => {
   const router = useRouter()
@@ -69,8 +69,8 @@ const SignAndVerify: NextPage = () => {
 
       const signer = wallet.getSigner()
       const acc = await signer.getAccounts()
-      const config = getConfig("test")
-      const account = await fetchAccount(config.restUrl,signerAddress)
+      const config = getConfig('test')
+      const account = await fetchAccount(config.restUrl, signerAddress)
       if (!account) throw new Error('Account not found')
       if (!acc[0]) throw new Error('Account public key not found')
 
@@ -114,11 +114,11 @@ Verify tweet using:`,
   }
 
   return (
-    <div className="relative px-12 py-6 space-y-8">
+    <div className="relative py-6 px-12 space-y-8">
       <NextSeo title="Sign and Verify" />
 
       <div className="space-y-8 text-center">
-        <h1 className="text-4xl font-bold font-heading">Sign Message</h1>
+        <h1 className="font-heading text-4xl font-bold">Sign Message</h1>
       </div>
 
       <hr className="border-white/20" />
@@ -157,7 +157,7 @@ Verify tweet using:`,
         </Conditional>
         <button
           className={clsx(
-            'flex items-center py-2 px-8 space-x-2 font-bold bg-plumbus-50 hover:bg-plumbus-40 rounded',
+            'flex items-center py-2 px-8 space-x-2 font-bold text-white bg-primary-400 hover:bg-primary-300',
             'transition hover:translate-y-[-2px]',
             {
               'opacity-50 cursor-not-allowed pointer-events-none': signDisabled,
@@ -175,7 +175,7 @@ Verify tweet using:`,
       {signedMessage && <JsonPreview content={signedMessage} copyable title="Signature" />}
 
       <div className="space-y-8 text-center">
-        <h1 className="text-4xl font-bold font-heading">Verify Message</h1>
+        <h1 className="font-heading text-4xl font-bold">Verify Message</h1>
       </div>
 
       <hr className="border-white/20" />
