@@ -2,6 +2,7 @@ import '@fontsource/jetbrains-mono/latin.css'
 import '@fontsource/roboto/latin.css'
 import '../styles/globals.css'
 import '../styles/datepicker.css'
+import '../styles/fonts.css'
 
 import type { WalletControllerChainOptions } from '@terra-money/wallet-provider'
 import { StaticWalletProvider, WalletProvider } from '@terra-money/wallet-provider'

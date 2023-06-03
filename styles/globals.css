@@ -29,3 +29,14 @@ html {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  overflow-y: overlay;
+  /* font-family: Montserrat, sans-serif; */
+  font-family: Manrope, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.25px;
+}
