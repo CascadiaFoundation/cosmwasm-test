@@ -13,7 +13,20 @@ module.exports = {
         gray: { DEFAULT: '#F3F6F8' },
         'dark-gray': { DEFAULT: '#191D20' },
         purple: { DEFAULT: '#7E5DFF' },
-
+        primary: {
+          300: '#0064c8',
+          400: '#004b96',
+          500: '#003264',
+          600: '#001932',
+          700: '#181C1F',
+        },
+        'main-900': '#4267B3',
+        'secondary-100': '#E9EBEE',
+        'secondary-200': '#F6F7F8',
+        'primary-500': '#616771',
+        'primary-900': '#18191A',
+        'footer-text': '#B0B3B8',
+        'primary-blue': '#003264',
         neutral: colors.neutral,
         plumbus: {
           DEFAULT: '#2B70BE',
@@ -36,7 +49,7 @@ module.exports = {
         twitter: { DEFAULT: '#1DA1F2' },
       },
       fontFamily: {
-        heading: ["'Basement Grotesque'", ...defaultTheme.fontFamily.sans],
+        heading: ["'Montserrat'", ...defaultTheme.fontFamily.sans],
         sans: ['Roboto', ...defaultTheme.fontFamily.sans],
         mono: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
       },

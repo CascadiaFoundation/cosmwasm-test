@@ -31,9 +31,9 @@ export const ExecuteCombobox = ({ value, onChange }: ExecuteComboboxProps) => {
       <div className="relative">
         <Combobox.Input
           className={clsx(
-            'w-full bg-white/10 rounded border-2 border-white/20 form-input',
-            'placeholder:text-white/50',
-            'focus:ring focus:ring-plumbus-20',
+            'w-full bg-transparent border border-dark/20 form-input',
+            'placeholder:text-dark/50',
+            'focus:ring-1 focus:ring-primary-400',
           )}
           displayValue={(val?: ExecuteListItem) => val?.name ?? ''}
           id="message-type"
@@ -54,8 +54,8 @@ export const ExecuteCombobox = ({ value, onChange }: ExecuteComboboxProps) => {
           <Combobox.Options
             className={clsx(
               'overflow-auto absolute z-10 mt-2 w-full max-h-[30vh]',
-              'bg-stone-800/80 rounded shadow-lg backdrop-blur-sm',
-              'divide-y divide-stone-500/50',
+              'bg-white/80 shadow-lg backdrop-blur-sm',
+              'divide-y divide-dark/50',
             )}
           >
             {filtered.length < 1 && (
@@ -67,7 +67,9 @@ export const ExecuteCombobox = ({ value, onChange }: ExecuteComboboxProps) => {
               <Combobox.Option
                 key={entry.id}
                 className={({ active }) =>
-                  clsx('flex relative flex-col py-2 px-4 space-y-1 cursor-pointer', { 'bg-plumbus-70': active })
+                  clsx('flex relative flex-col py-2 px-4 space-y-1 cursor-pointer', {
+                    'text-white bg-primary-400': active,
+                  })
                 }
                 value={entry}
               >

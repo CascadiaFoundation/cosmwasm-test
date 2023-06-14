@@ -38,26 +38,26 @@ export const JsonPreview = ({
   }
 
   return (
-    <div className="relative bg-stone-800/80 rounded border-2 border-white/20 divide-y-2 divide-white/20">
+    <div className="relative bg-transparent border border-dark/20 divide-y divide-dark/20">
       <div className="flex items-center py-1 px-2 space-x-2">
         <span className="text-sm font-bold">{title}</span>
         <div className="flex-grow" />
         {isToggleable && (
-          <Tooltip label={show ? 'Hide content' : 'Show content'}>
+          <Tooltip className="text-white" label={show ? 'Hide content' : 'Show content'}>
             <button onClick={toggle} type="button">
               <FaChevronDown className={show ? 'rotate-180' : ''} size={16} />
             </button>
           </Tooltip>
         )}
         {isCopyable && (
-          <Tooltip label="Copy to clipboard">
+          <Tooltip className="text-white" label="Copy to clipboard">
             <button onClick={() => void copy(JSON.stringify(content))} type="button">
               <FaRegClipboard size={16} />
             </button>
           </Tooltip>
         )}
         {onClose && (
-          <Tooltip label="Close">
+          <Tooltip className="text-white" label="Close">
             <button className="text-plumbus" onClick={onClose} type="button">
               <FaTimes size={20} />
             </button>

@@ -16,13 +16,13 @@ export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
       <div
         className={clsx(
           'overflow-auto fixed top-0 left-0 min-w-[250px] max-w-[250px] no-scrollbar',
-          'bg-black/50 border-r-[1px] border-r-plumbus-light',
+          'border-r-[1px] border-primary-300',
           { 'translate-x-[-230px]': !isOpen },
         )}
       >
         {/* inner component */}
         <div
-          className={clsx('flex flex-col gap-y-4 p-8 min-h-screen', {
+          className={clsx('flex flex-col gap-y-2 p-8 min-h-screen font-bold text-primary-400', {
             invisible: !isOpen,
           })}
         >
@@ -34,8 +34,8 @@ export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
       <button
         className={clsx(
           'absolute top-[32px] right-[-12px] p-1 w-[24px] h-[24px]',
-          'text-black bg-plumbus-light rounded-full',
-          'hover:bg-plumbus',
+          'text-white bg-primary-400 rounded-full',
+          'hover:bg-primary-300',
         )}
         onClick={toggleSidebar}
         type="button"

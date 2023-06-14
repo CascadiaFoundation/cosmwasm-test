@@ -12,7 +12,7 @@ export default class CustomDocument extends NextDocument {
           <FaviconsMetaTags />
         </Head>
 
-        <body className="font-sans antialiased">
+        <body>
           <Main />
           <NextScript />
         </body>

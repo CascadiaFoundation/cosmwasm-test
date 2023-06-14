@@ -109,9 +109,9 @@ const CW1SubkeysQueryPage: NextPage = () => {
           <FormControl htmlId="contract-query-type" subtitle="Type of query to be dispatched" title="Query Type">
             <select
               className={clsx(
-                'bg-white/10 rounded border-2 border-white/20 form-select',
-                'placeholder:text-white/50',
-                'focus:ring focus:ring-plumbus-20',
+                'bg-transparent border border-dark/20 form-select',
+                'placeholder:text-dark/50',
+                'focus:ring-1 focus:ring-primary-400',
               )}
               id="contract-query-type"
               name="query-type"

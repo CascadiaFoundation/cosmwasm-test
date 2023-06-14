@@ -7,9 +7,9 @@ export const StyledTextArea = forwardRef<HTMLTextAreaElement, ComponentProps<'te
     return (
       <textarea
         className={clsx(
-          'bg-white/10 rounded border-2 border-white/20 form-input',
-          'placeholder:text-white/50',
-          'focus:ring focus:ring-plumbus-20',
+          'bg-transparent border border-dark/20 form-input',
+          'placeholder:text-dark/50',
+          'focus:ring-1 focus:ring-primary-400',
           className,
         )}
         ref={ref}

@@ -18,7 +18,6 @@ import { NextSeo } from 'next-seo'
 import type { FormEvent } from 'react'
 import { useState } from 'react'
 import { toast } from 'react-hot-toast'
-import { FaAsterisk } from 'react-icons/fa'
 import { useMutation } from 'react-query'
 import { CW1_SUBKEYS_CODE_ID } from 'utils/constants'
 import { withMetadata } from 'utils/layout'
@@ -80,7 +79,7 @@ const CW1SubkeysInstantiatePage: NextPage = () => {
   const txHash = data?.transactionHash
 
   return (
-    <form className="px-12 py-6 space-y-4" onSubmit={mutate}>
+    <form className="py-6 px-12 space-y-4" onSubmit={mutate}>
       <NextSeo title="Instantiate CW1 Subkeys Contract" />
       <ContractPageHeader
         description="CW1 Subkeys is a whitelisting contract dealing with Send, Delegate, Undelegate, Redelegate and Withdraw messages."
@@ -110,7 +109,7 @@ const CW1SubkeysInstantiatePage: NextPage = () => {
         />
 
         <FormControl isRequired subtitle="Decide if you want to change the admins later on" title="Admins Lock">
-          <fieldset className="p-4 space-y-4 border-2 rounded border-white/25">
+          <fieldset className="p-4 space-y-4 border border-dark/25">
             {MUTABLE_RADIO_VALUES.map(({ id, title, subtitle }) => (
               <Radio
                 key={`mutable-${id}`}

@@ -9,7 +9,6 @@ import type { NextPage } from 'next'
 import { NextSeo } from 'next-seo'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-hot-toast'
-import { FaAsterisk } from 'react-icons/fa'
 import { withMetadata } from 'utils/layout'
 
 const UploadContract: NextPage = () => {
@@ -51,9 +50,9 @@ const UploadContract: NextPage = () => {
       setLoading(true)
 
       const client = getClient()
-      
+
       const result = await client.upload(address, wasmByteArray, 'auto')
-      if(result === undefined) {
+      if (result === undefined) {
         return
       }
 
@@ -74,14 +73,14 @@ const UploadContract: NextPage = () => {
   }
 
   return (
-    <section className="px-12 py-6 space-y-4">
+    <section className="py-6 px-12 space-y-4">
       <NextSeo title="Upload Contract" />
       <ContractPageHeader
         description="Here you can upload a contract on Cascadia Network."
         link=""
         title="Upload Contract"
       />
-      <div className="inset-x-0 bottom-0 border-b-2 border-white/25" />
+      <div className="inset-x-0 bottom-0 border-b-2 border-primary-400/25" />
 
       <Conditional test={Boolean(transactionResult)}>
         <Alert type="info">
@@ -94,13 +93,13 @@ const UploadContract: NextPage = () => {
       <div
         className={clsx(
           'flex relative justify-center items-center space-y-4 h-32',
-          'rounded border-2 border-white/20 border-dashed',
+          'rounded border-2 border-dark/20 border-dashed',
         )}
       >
         <input
           accept=".wasm"
           className={clsx(
-            'file:py-2 file:px-4 file:mr-4 file:bg-plumbus-light file:rounded file:border-0 cursor-pointer',
+            'file:py-2 file:px-4 file:mr-4 file:text-white file:bg-primary-400 file:border-0 border border-primary-400 cursor-pointer',
             'before:absolute before:inset-0 before:hover:bg-white/5 before:transition',
           )}
           onChange={onFileChange}

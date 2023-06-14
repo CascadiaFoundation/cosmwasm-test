@@ -22,7 +22,7 @@ export const LinkTab = (props: LinkTabProps) => {
       href={href}
     >
       <h4 className="font-bold">{title}</h4>
-      <span className="text-sm text-white/80 line-clamp-2">{description}</span>
+      <span className="text-sm text-dark/80 line-clamp-2">{description}</span>
     </Anchor>
   )
 }

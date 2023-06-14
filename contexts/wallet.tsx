@@ -1,25 +1,23 @@
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { Decimal } from '@cosmjs/math'
 import type { OfflineDirectSigner, OfflineSigner } from '@cosmjs/proto-signing'
+import { Registry } from '@cosmjs/proto-signing'
 import type { Coin } from '@cosmjs/stargate'
+import { AminoTypes, defaultRegistryTypes } from '@cosmjs/stargate'
+import { cosmwasmAminoConverters, cosmwasmProtoRegistry } from 'codegen/cosmwasm/client'
+import { ibcAminoConverters, ibcProtoRegistry } from 'codegen/ibc/client'
 import type { AppConfig } from 'config'
 import { getConfig, keplrConfig } from 'config'
+import fetchAccount from 'http/get/fetchAccount'
+import fetchBalances from 'http/get/fetchBalance'
 import type { ReactNode } from 'react'
 import { useEffect } from 'react'
 import { toast } from 'react-hot-toast'
 import { createTrackedSelector } from 'react-tracked'
 import { NETWORK } from 'utils/constants'
-import type { State } from 'zustand'
+import SigningKeplrCosmWasmClient from 'utils/signingKeplrCosmWasmClient'
 import create from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
-import { Registry, isOfflineDirectSigner } from "@cosmjs/proto-signing";
-import {cosmwasmProtoRegistry,cosmwasmAminoConverters} from 'codegen/cosmwasm/client'
-import {ibcProtoRegistry,ibcAminoConverters} from 'codegen/ibc/client'
-import { defaultRegistryTypes, AminoTypes } from "@cosmjs/stargate";
-import fetchAccount from 'http/get/fetchAccount'
-import SigningKeplrCosmWasmClient from "utils/signingKeplrCosmWasmClient"
-import { addRequestMeta } from 'next/dist/server/request-meta'
-import fetchBalances from 'http/get/fetchBalance'
 /**
  * Keplr wallet store type definitions, merged from previous kepler ctx and
  * previous wallet ctx.
@@ -27,7 +25,7 @@ import fetchBalances from 'http/get/fetchBalance'
  * - previous keplr ctx: https://github.com/CosmosContracts/cascadiad-tools/blob/41c256f71d2b8b55fade12fae3b8c6a493a1e3ce/services/keplr.ts
  * - previous wallet ctx: https://github.com/CosmosContracts/cascadiad-tools/blob/41c256f71d2b8b55fade12fae3b8c6a493a1e3ce/contexts/wallet.tsx
  */
-export interface KeplrWalletStore  {
+export interface KeplrWalletStore {
   accountNumber: number
   address: string
   balance: Coin[]
@@ -127,7 +125,7 @@ export const useWalletStore = create(
     updateSigner: (signer) => set({ signer }),
     setQueryClient: async () => {
       try {
-        const client = (await createQueryClient()) as SigningKeplrCosmWasmClient
+        const client = await createQueryClient()
         set({ client })
       } catch (err: any) {
         toast.error(err?.message)
@@ -172,7 +170,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
  * Keplr wallet subscriptions (side effects)
  */
 const WalletSubscription = () => {
- 
   useEffect(() => {
     const walletAddress = window.localStorage.getItem('wallet_address')
     if (walletAddress) {
@@ -211,10 +208,9 @@ const WalletSubscription = () => {
         try {
           if (!signer) {
             useWalletStore.setState({
-              client: (await createQueryClient()) as SigningKeplrCosmWasmClient,
+              client: await createQueryClient(),
             })
           } else {
-            
             useWalletStore.setState({
               client: await createClient({ signer }),
             })
@@ -225,7 +221,6 @@ const WalletSubscription = () => {
       },
     )
   }, [])
-
 
   useEffect(() => {
     return useWalletStore.subscribe(
@@ -239,13 +234,14 @@ const WalletSubscription = () => {
         }
         const balance: Coin[] = []
         const address = (await signer.getAccounts())[0].address
-        console.log("url:-====",config.restUrl)
-        const account = await fetchAccount(config.restUrl,address)
+        // eslint-disable-next-line no-console
+        console.log('url:-====', config.restUrl)
+        const account = await fetchAccount(config.restUrl, address)
         const key = await window.keplr.getKey(config.chainId)
         await refreshBalance(address, balance)
         window.localStorage.setItem('wallet_address', address)
         useWalletStore.setState({
-          accountNumber: +account?.base_account.account_number || 0,
+          accountNumber: Number(account.base_account.account_number) || 0,
           address,
           balance,
           initialized: true,
@@ -259,48 +255,47 @@ const WalletSubscription = () => {
   return null
 }
 
-
-const createClient = async({ signer }: { signer: OfflineSigner }) => {
+const createClient = async ({ signer }: { signer: OfflineSigner }) => {
   const { config } = useWalletStore.getState()
-  const {registry, aminoTypes} = getSigningClientOptions()
-  const wasmClient =  await SigningCosmWasmClient.connectWithSigner(config.rpcUrl, signer, {
+  const { registry, aminoTypes } = getSigningClientOptions()
+  const wasmClient = await SigningCosmWasmClient.connectWithSigner(config.rpcUrl, signer, {
     gasPrice: {
       amount: Decimal.fromUserInput('0.0025', 100),
       denom: config.feeToken,
     },
     registry,
-    aminoTypes
+    aminoTypes,
   })
   const offlineSigner = signer as OfflineDirectSigner
   return new SigningKeplrCosmWasmClient(wasmClient, offlineSigner)
 }
 
-const createQueryClient = async() => {
+const createQueryClient = async () => {
   const { config } = useWalletStore.getState()
-  const {registry, aminoTypes} = getSigningClientOptions()
-  const { keplr } = window;
-  const signer =  keplr!.getOfflineSigner(config.chainId);
+  const { registry, aminoTypes } = getSigningClientOptions()
+  const { keplr } = window
+  const signer = keplr.getOfflineSigner(config.chainId)
   const wasmClient = await SigningCosmWasmClient.connectWithSigner(config.rpcUrl, signer, {
     gasPrice: {
-      amount: Decimal.fromUserInput("200000",0),
+      amount: Decimal.fromUserInput('200000', 0),
       denom: config.feeToken,
     },
 
     registry,
-    aminoTypes
+    aminoTypes,
   })
- return new SigningKeplrCosmWasmClient(wasmClient, signer)
+  return new SigningKeplrCosmWasmClient(wasmClient, signer)
 }
-export const getSigningClientOptions =()=>{
-  const registry = new Registry([...defaultRegistryTypes, ... cosmwasmProtoRegistry, ...ibcProtoRegistry]);
+export const getSigningClientOptions = () => {
+  const registry = new Registry([...defaultRegistryTypes, ...cosmwasmProtoRegistry, ...ibcProtoRegistry])
   const aminoTypes = new AminoTypes({
-    ...cosmwasmAminoConverters,...ibcAminoConverters
-
-  });
+    ...cosmwasmAminoConverters,
+    ...ibcAminoConverters,
+  })
 
   return {
     registry,
-    aminoTypes
+    aminoTypes,
   }
 }
 

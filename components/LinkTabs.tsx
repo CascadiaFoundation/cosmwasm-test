@@ -13,7 +13,7 @@ export const LinkTabs = ({ data, activeIndex }: LinkTabsProps) => {
     <div
       className={clsx(
         'grid before:absolute relative grid-flow-col items-stretch rounded',
-        'before:inset-x-0 before:bottom-0 before:border-b-2 before:border-white/25',
+        'before:inset-x-0 before:bottom-0 before:border-b-2 before:border-primary-400/25',
       )}
     >
       {data.map((item, index) => (

@@ -19,7 +19,7 @@ export const Radio = (props: RadioProps) => {
       {/* radio element */}
       <input
         checked={checked}
-        className="mt-1 w-4 h-4 text-plumbus focus:ring-plumbus cursor-pointer form-radio"
+        className="mt-1 w-4 h-4 text-primary-400 bg-dark/10 focus:ring-primary-400 cursor-pointer form-radio"
         id={`${htmlFor}-${id}`}
         name={selectSingle ? id : htmlFor}
         onChange={onChange}
