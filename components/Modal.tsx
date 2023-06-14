@@ -58,7 +58,7 @@ export const Modal = () => {
               </div>
               <div className="flex justify-end items-center p-6 mt-1">
                 <Button
-                  className={clsx({ 'opacity-50': isButtonDisabled })}
+                  className={clsx({ 'opacity-100': isButtonDisabled })}
                   disabled={isButtonDisabled}
                   isWide
                   onClick={accept}

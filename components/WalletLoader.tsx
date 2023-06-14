@@ -45,12 +45,12 @@ export const WalletLoader = () => {
             <Popover.Panel
               className={clsx(
                 'absolute inset-x-4 mt-2',
-                'bg-stone-800/80 rounded shadow-lg shadow-black/90 backdrop-blur-sm',
+                'bg-white border border-primary-400 shadow backdrop-blur-sm',
                 'flex flex-col items-stretch text-sm divide-y divide-white/10',
               )}
             >
               <div className="flex flex-col items-center py-2 px-4 space-y-1 text-center">
-                <span className="py-px px-2 mb-2 font-mono text-xs text-white/50 rounded-full border border-white/25">
+                <span className="py-px px-2 mb-2 font-mono text-xs text-primary-400 rounded-full border border-white/25">
                   {getShortAddress(address)}
                 </span>
                 <div className="font-bold">Your Balances</div>
